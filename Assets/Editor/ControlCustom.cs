@@ -74,6 +74,7 @@ namespace CustomUI
 
             UGUIButton bt = buttonRoot.AddComponent<UGUIButton>();
             SetDefaultColorTransitionValues(bt);
+            bt.transition = Selectable.Transition.None;
 
             Text text = childText.AddComponent<Text>();
             text.text = "Button";

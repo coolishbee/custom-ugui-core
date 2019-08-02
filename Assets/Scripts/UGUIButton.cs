@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine;
-using UnityEditor;
 
 namespace CustomUI
 {
@@ -16,11 +15,13 @@ namespace CustomUI
             none,
 
             click_1,
-            click_2,            
+            click_2,
         }
         public Sound sound = Sound.click_1;
+        public bool pressScaling = true;
+        Vector3 orgScale = new Vector3(1f, 1f, 1f);
 
-        [Serializable]        
+        [Serializable]
         public class ButtonClickedEvent : UnityEvent { }
 
         // Event delegates triggered on click.
@@ -40,9 +41,9 @@ namespace CustomUI
 
         static public void PlaySound(Sound snd, GameObject go)
         {
-            if(snd != Sound.none)
+            if (snd != Sound.none)
             {
-                switch(snd)
+                switch (snd)
                 {
                     case Sound.click_1: CustomUtil.Play("click1", go); break;
                 }
@@ -64,6 +65,48 @@ namespace CustomUI
                 return;
             PlaySound(sound, gameObject);
             Press();
+        }
+
+        public override void OnPointerDown(PointerEventData eventData)
+        {
+            base.OnPointerDown(eventData);
+            if (pressScaling)
+            {
+                
+                Debug.Log("OnPointerDown : " + IsPressed());
+                if (IsPressed())
+                {
+                    float duration = 0.05f;
+                    Vector3 vScale = gameObject.transform.localScale * 1.05f;
+
+                    iTween.ScaleTo(gameObject, iTween.Hash(
+                        "scale", vScale,
+                        "time", duration,
+                        "easetype", "easeInOutBack",
+                        "looptype", "none"
+                    ));
+                }
+            }
+        }
+        public override void OnPointerUp(PointerEventData eventData)
+        {
+            base.OnPointerUp(eventData);
+            if (pressScaling)
+            {
+                
+                Debug.Log("OnPointerUp : " + IsPressed());
+                if (IsPressed() == false)
+                {
+                    float duration = 0.05f;
+
+                    iTween.ScaleTo(gameObject, iTween.Hash(
+                        "scale", orgScale,
+                        "time", duration,
+                        "easetype", "easeInOutBack",
+                        "looptype", "none"
+                    ));
+                }
+            }
         }
 
         public virtual void OnSubmit(BaseEventData eventData)

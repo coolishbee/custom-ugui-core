@@ -17,7 +17,7 @@ namespace CustomUI
                 return null;
             }
             GameObject go = null;
-            Debug.Log("사운드 재생");
+            //Debug.Log("사운드 재생");
             return go;
         }
     }
